@@ -2,6 +2,8 @@ from .models import Units, Students, Lecturers, Attendance
 from flask import request
 from . import db
 
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+
 
 def register_routes(app):
     @app.route('/api/units', methods=['GET'])

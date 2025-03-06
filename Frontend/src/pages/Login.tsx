@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import '../assets/dashboard.css';
+import "../assets/dashboard.css";
 
 const Login: React.FC = () => {
   const [lecturerCode, setLecturerCode] = useState("");
@@ -11,24 +11,35 @@ const Login: React.FC = () => {
     if (!lecturerCode) {
       setError("Please enter your lecturer code.");
       return;
-    }
-    fetch("https://attendify-5pet.onrender.com/api/lecturers")
-      .then((response) => response.json())
+    } // Response with access if the lecturer code is correct
+    fetch("https://attendify-5pet.onrender.com/auth/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ lecturerCode }),
+    })
+      .then((res) => res.json())
       .then((data) => {
-        const lecturer = data.lecturers.find(
-          (l: any) => l.lecturer_code === lecturerCode
-        );
-        if (lecturer) {
-          console.log(lecturer);
-          localStorage.setItem("lecturer", JSON.stringify(lecturer));
-          navigate("/dashboard");
-          console.log("Navigating to dashboard");
+        if (data.error) {
+          setError(data.error);
         } else {
-          setError("Invalid lecturer code.");
+          localStorage.setItem("access", data.access);
+          navigate("/dashboard");
         }
-      })
-      .catch(() => setError("An error occurred. Please try again."));
+      });
   };
+
+  // use token to check if the user is already logged in
+  if (localStorage.getItem("access")) {
+    navigate("/dashboard");
+  }
+
+  // token expires after 1 hour
+  setTimeout(() => {
+    localStorage.removeItem("access");
+  }
+  , 3600000);
 
   return (
     <div className="login-form">
