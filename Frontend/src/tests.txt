@@ -1,0 +1,410 @@
+ATTENDANCE                                                                                                                                                                               ```<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mark Attendance</title>
+  <style>
+    /* Basic styling for the attendance form */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      padding: 20px;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      box-sizing: border-box;
+    }
+    button {
+      background: #4285f4;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Mark Attendance</h2>
+    <div id="message"></div>
+    <form id="attendanceForm">
+      <label for="regNumber">Registration Number:</label>
+      <input type="text" id="regNumber" name="regNumber" required>
+      <button type="submit">Submit Attendance</button>
+    </form>
+  </div>
+  <script>
+    // Helper function to parse query parameters from URL.
+    function getQueryParams() {
+      const params = {};
+      window.location.search.substring(1).split('&').forEach(function(pair) {
+        const [key, value] = pair.split('=');
+        params[decodeURIComponent(key)] = decodeURIComponent(value || '');
+      });
+      return params;
+    }
+
+    const params = getQueryParams();
+    const expiry = params.expiry;
+    const lecturerId = params.lecturer_id;
+    const unitId = params.unit_id;
+
+    // Validate expiration.
+    if(expiry) {
+      const expiryDate = new Date(expiry);
+      const now = new Date();
+      if(now > expiryDate) {
+        document.getElementById('message').innerHTML = '<p class="error">This attendance link has expired.</p>';
+        document.getElementById('attendanceForm').style.display = 'none';
+      }
+    }
+
+    // Handle form submission.
+    document.getElementById('attendanceForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const regNumber = document.getElementById('regNumber').value.trim();
+      if(!regNumber) {
+        alert('Please enter your registration number.');
+        return;
+      }
+      // Post the attendance data.
+      fetch('http://127.0.0.1:5000/api/attendance', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          student_id: regNumber,
+          unit_id: unitId,
+          lecturer_id: lecturerId,
+          date: new Date().toISOString(),
+          status: 'present'
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('message').innerHTML = '<p>Attendance marked successfully!</p>';
+        document.getElementById('attendanceForm').reset();
+      })
+      .catch(error => {
+        console.error('Error marking attendance:', error);
+        document.getElementById('message').innerHTML = '<p class="error">An error occurred. Please try again.</p>';
+      });
+    });
+  </script>
+</body>
+</html>
+```
+
+
+admin
+
+DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - Lecturer Attendance Management</title>
+  <style>
+    /* Basic styling for the login form, dashboard, and QR section */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f2f2f2;
+    }
+    .login-form, .container {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .login-form input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      box-sizing: border-box;
+    }
+    .login-form button {
+      width: 100%;
+      padding: 10px;
+      background: #4285f4;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .hidden { display: none; }
+    header { text-align: center; margin-bottom: 20px; }
+    .dashboard-section { margin-bottom: 30px; }
+    .dashboard-section h2 { border-bottom: 1px solid #ddd; padding-bottom: 10px; }
+    ul { list-style-type: none; padding: 0; }
+    li { padding: 5px 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background: #f9f9f9; }
+    .error { color: red; }
+    /* Styling for QR Code section */
+    #qrSection {
+      border-top: 2px solid #4285f4;
+      padding-top: 20px;
+    }
+    #qrSection label {
+      display: block;
+      margin-top: 10px;
+    }
+    #qrSection input, #qrSection select {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0 10px 0;
+      box-sizing: border-box;
+    }
+    #qrSection button {
+      padding: 10px;
+      background: #28a745;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #qrCodeDisplay {
+      margin-top: 20px;
+      text-align: center;
+    }
+  </style>
+  <!-- Include the QRCode.js library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+  <!-- Login Form -->
+  <div class="login-form" id="loginForm">
+    <h2>Lecturer Login</h2>
+    <input type="text" id="lecturerCode" placeholder="Enter Lecturer Code" required>
+    <button id="loginBtn">Login</button>
+    <p class="error" id="loginError"></p>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div class="container hidden" id="dashboard">
+    <header>
+      <h1>Welcome, <span id="lecturerName"></span></h1>
+    </header>
+
+    <!-- Units Section -->
+    <div class="dashboard-section" id="unitsSection">
+      <h2>Your Units</h2>
+      <ul id="unitsList"></ul>
+    </div>
+
+    <!-- Students Section -->
+    <div class="dashboard-section" id="studentsSection">
+      <h2>Registered Students</h2>
+      <table id="studentsTable">
+        <thead>
+          <tr>
+            <th>Student Name</th>
+            <th>Registration Number</th>
+            <th>Year of Study</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Students will be populated here -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Attendance Section -->
+    <div class="dashboard-section" id="attendanceSection">
+      <h2>Attendance Records</h2>
+      <table id="attendanceTable">
+        <thead>
+          <tr>
+            <th>Student Name</th>
+            <th>Unit</th>
+            <th>Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Attendance records will be populated here -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- QR Code Generation Section -->
+    <div class="dashboard-section" id="qrSection">
+      <h2>Generate Attendance QR Code</h2>
+      <label for="unitSelect">Select Unit:</label>
+      <select id="unitSelect">
+        <option value="">--Select Unit--</option>
+      </select>
+      <label for="expiryInput">Link Expiration (minutes):</label>
+      <input type="number" id="expiryInput" placeholder="Enter minutes until link expires" min="1">
+      <button id="generateQRBtn">Generate QR Code</button>
+      <div id="qrLink" style="margin-top:15px; text-align:center;"></div>
+      <div id="qrCodeDisplay"></div>
+    </div>
+  </div>
+
+  <script>
+    // Global variables to store lecturer and unit info
+    let currentLecturer = null;
+    let lecturerUnits = [];
+
+    document.getElementById('loginBtn').addEventListener('click', function() {
+      const lecturerCode = document.getElementById('lecturerCode').value.trim();
+      if (!lecturerCode) {
+        document.getElementById('loginError').textContent = 'Please enter your lecturer code.';
+        return;
+      }
+      // Simulate login by fetching all lecturers and matching the lecturer code.
+      fetch('http://127.0.0.1:5000/api/lecturers')
+        .then(response => response.json())
+        .then(data => {
+          const lecturers = data.lecturers;
+          const lecturer = lecturers.find(l => l.lecturer_code === lecturerCode);
+          if (lecturer) {
+            currentLecturer = lecturer;
+            document.getElementById('lecturerName').textContent = lecturer.lecturer_name;
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            loadDashboard();
+          } else {
+            document.getElementById('loginError').textContent = 'Invalid lecturer code.';
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching lecturers:', error);
+          document.getElementById('loginError').textContent = 'An error occurred. Please try again.';
+        });
+    });
+
+    function loadDashboard() {
+      if (!currentLecturer) return;
+      loadUnits();
+      loadStudents();
+      loadAttendance();
+    }
+
+    // Load units taught by the lecturer and populate both the units list and QR unit select.
+    function loadUnits() {
+      fetch(`http://127.0.0.1:5000/api/lecturers/${currentLecturer.id}/units`)
+        .then(response => response.json())
+        .then(data => {
+          lecturerUnits = data.units;
+          const unitsList = document.getElementById('unitsList');
+          unitsList.innerHTML = '';
+          lecturerUnits.forEach(unit => {
+            const li = document.createElement('li');
+            li.textContent = `${unit.unit_name} (${unit.unit_code})`;
+            unitsList.appendChild(li);
+          });
+          populateQRUnitSelect();
+        })
+        .catch(error => console.error('Error fetching units:', error));
+    }
+
+    // Populate the select dropdown in the QR code generation section.
+    function populateQRUnitSelect() {
+      const unitSelect = document.getElementById('unitSelect');
+      unitSelect.innerHTML = '<option value="">--Select Unit--</option>';
+      lecturerUnits.forEach(unit => {
+        const option = document.createElement('option');
+        option.value = unit.id;
+        option.textContent = `${unit.unit_name} (${unit.unit_code})`;
+        unitSelect.appendChild(option);
+      });
+    }
+
+    // Load students registered in any of the lecturer's units.
+    function loadStudents() {
+      fetch('http://127.0.0.1:5000/api/students')
+        .then(response => response.json())
+        .then(data => {
+          const students = data.students;
+          const tbody = document.getElementById('studentsTable').querySelector('tbody');
+          tbody.innerHTML = '';
+          const lecturerUnitIds = lecturerUnits.map(unit => unit.id);
+          const filteredStudents = students.filter(student =>
+            student.registered_units.some(unitId => lecturerUnitIds.includes(unitId))
+          );
+          filteredStudents.forEach(student => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${student.student_name}</td>
+                            <td>${student.reg_number}</td>
+                            <td>${student.year_of_study}</td>`;
+            tbody.appendChild(tr);
+          });
+        })
+        .catch(error => console.error('Error fetching students:', error));
+    }
+
+    // Load attendance records for the lecturer's classes.
+    function loadAttendance() {
+      fetch('http://127.0.0.1:5000/api/attendance')
+        .then(response => response.json())
+        .then(data => {
+          const attendanceRecords = data.attendance;
+          const tbody = document.getElementById('attendanceTable').querySelector('tbody');
+          tbody.innerHTML = '';
+          const lecturerUnitIds = lecturerUnits.map(unit => unit.id);
+          const filteredAttendance = attendanceRecords.filter(record =>
+            record.lecturer_id === currentLecturer.id && lecturerUnitIds.includes(record.unit_id)
+          );
+          filteredAttendance.forEach(record => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${record.student_name || record.student_id}</td>
+                            <td>${record.unit_name || record.unit_id}</td>
+                            <td>${record.date}</td>
+                            <td>${record.status}</td>`;
+            tbody.appendChild(tr);
+          });
+        })
+        .catch(error => console.error('Error fetching attendance:', error));
+    }
+
+    // Handle QR Code generation
+    document.getElementById('generateQRBtn').addEventListener('click', function() {
+      const selectedUnitId = document.getElementById('unitSelect').value;
+      const expiryMinutes = parseInt(document.getElementById('expiryInput').value);
+      
+      if (!selectedUnitId) {
+        alert('Please select a unit.');
+        return;
+      }
+      if (!expiryMinutes || expiryMinutes < 1) {
+        alert('Please enter a valid expiration time in minutes.');
+        return;
+      }
+      // Calculate expiration time based on current time and expiryMinutes.
+      const expiryDate = new Date(Date.now() + expiryMinutes * 60000).toISOString();
+      // Construct the attendance link.
+      // Note: Replace "http://yourdomain.com/mark_attendance" with your actual domain/path.
+      const attendanceLink = `http://127.0.0.1:3000/Front-end/attendance.html?lecturer_id=${currentLecturer.id}&unit_id=${selectedUnitId}&expiry=${encodeURIComponent(expiryDate)}`;
+      
+      // Display the link for reference.
+      document.getElementById('qrLink').textContent = attendanceLink;
+      
+      // Clear previous QR code (if any) and generate a new one.
+      const qrCodeDisplay = document.getElementById('qrCodeDisplay');
+      qrCodeDisplay.innerHTML = "";
+      new QRCode(qrCodeDisplay, {
+        text: attendanceLink,
+        width: 150,
+        height: 150,
+      });
+    });
+  </script>
+</body>
+</html>
+                                                                                                                                                                         
+

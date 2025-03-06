@@ -1,0 +1,71 @@
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f2f2f2;
+  }
+.admin-container h1 {
+    font-size: 20px;
+}
+
+.login-form, .admin-container {
+    max-width: 1000px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .login-form input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    box-sizing: border-box;
+  }
+  .login-form button {
+    width: 100%;
+    padding: 10px;
+    background: #4285f4;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  .hidden { display: none; }
+  .admin-container header { text-align: center; margin-bottom: 20px; }
+  .dashboard-section { margin-bottom: 30px; }
+  .dashboard-section h2 { border-bottom: 1px solid #ddd; padding-bottom: 10px; }
+  ul { list-style-type: none; padding: 0; }
+  li { padding: 5px 0; }
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+  th { background: #f9f9f9; }
+  /* Styling for QR Code section */
+  #qrSection {
+    border-top: 2px solid #4285f4;
+    padding-top: 20px;
+  }
+  #qrSection label {
+    display: block;
+    margin-top: 10px;
+  }
+  #qrSection input, #qrSection select {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0 10px 0;
+    box-sizing: border-box;
+  }
+  #qrSection button {
+    padding: 10px;
+    background: #28a745;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  #qrCodeDisplay {
+    margin-top: 20px;
+    text-align: center;
+  }
+  .error { color: red; }
