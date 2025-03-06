@@ -12,7 +12,7 @@ const Login: React.FC = () => {
       setError("Please enter your lecturer code.");
       return;
     }
-    fetch("http://127.0.0.1:5000/api/lecturers")
+    fetch("https://attendify-5pet.onrender.com/api/lecturers")
       .then((response) => response.json())
       .then((data) => {
         const lecturer = data.lecturers.find(

@@ -38,14 +38,14 @@ const AdminDashboard: React.FC = () => {
 
   useEffect(() => {
     if (lecturer) {
-      fetch(`http://127.0.0.1:5000/api/lecturers/${lecturer.id}/units`)
+      fetch(`https://attendify-5pet.onrender.com/api/lecturers/${lecturer.id}/units`)
         .then((response) => response.json())
         .then((data) => setUnits(data.units));
     }
   }, [lecturer]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/api/students")
+    fetch("https://attendify-5pet.onrender.com/api/students")
       .then((response) => response.json())
       .then((data) => {
         const allStudents: Student[] = data.students;
@@ -61,7 +61,7 @@ const AdminDashboard: React.FC = () => {
   }, [units]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/api/attendance")
+    fetch("https://attendify-5pet.onrender.com/api/attendance")
       .then((response) => response.json())
       .then((data) => {
         const attendanceRecords: Attendance[] = data.attendance;
@@ -82,7 +82,7 @@ const AdminDashboard: React.FC = () => {
       return;
     }
     const expiryDate = new Date(Date.now() + expiryMinutes * 60000).toISOString();
-    const link = `http://localhost:5173/mark-attendance?lecturer_id=${lecturer.id}&unit_id=${selectedUnit}&expiry=${encodeURIComponent(expiryDate)}`;
+    const link = `/mark-attendance?lecturer_id=${lecturer.id}&unit_id=${selectedUnit}&expiry=${encodeURIComponent(expiryDate)}`;
     setQrLink(link);
   };
 
