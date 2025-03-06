@@ -18,4 +18,4 @@ def auth_routes(app):
             return {'message': 'Invalid lecturer code'}, 401
 
         access_token = create_access_token(identity=lecturer.lecturer_code)
-        return {'access_token': access_token}
+        return {'access_token': access_token, 'lecturer_id': lecturer.id}

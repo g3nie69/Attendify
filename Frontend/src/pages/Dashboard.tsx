@@ -30,9 +30,11 @@ const AdminDashboard: React.FC = () => {
   const [qrLink, setQrLink] = useState("");
 
   useEffect(() => {
-    const storedLecturer = localStorage.getItem("lecturer");
+    const storedLecturer = localStorage.getItem("lecturer_id");
     if (storedLecturer) {
-      setLecturer(JSON.parse(storedLecturer));
+      fetch(`https://attendify-5pet.onrender.com/api/lecturers/${storedLecturer}`)
+        .then((response) => response.json())
+        .then((data) => setLecturer(data.lecturer));
     }
   }, []);
 

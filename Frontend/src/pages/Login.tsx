@@ -24,7 +24,8 @@ const Login: React.FC = () => {
         if (data.error) {
           setError(data.error);
         } else {
-          localStorage.setItem("access", data.access);
+          localStorage.setItem("access", data.access_token);
+          localStorage.setItem("lecturer_id", data.lecturer_id);
           navigate("/dashboard");
         }
       });
