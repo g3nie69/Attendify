@@ -177,7 +177,7 @@ const AdminDashboard: React.FC = () => {
         <button onClick={generateQRCode}>Generate QR Code</button>
         {qrLink && (
           <div id="qrCodeDisplay">
-            <p>{qrLink}</p>
+            {/* <p>{qrLink}</p> */}
             <QRCodeCanvas value={qrLink} size={150} />
           </div>
         )}
