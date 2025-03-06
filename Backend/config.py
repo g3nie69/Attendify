@@ -1,4 +1,10 @@
+import os
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
 class Config:
-    SECRET_KEY = 'wonyaaltngoerwh67ite#%$^&*'
-    SQLALCHEMY_DATABASE_URI = 'postgresql://waltertaya:Walter_8236!@localhost:5432/attendance-management'
+    SECRET_KEY = os.getenv('SECRET_KEY')
+    SQLALCHEMY_DATABASE_URI = os.getenv('DB_URL')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
