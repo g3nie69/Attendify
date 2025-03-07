@@ -31,23 +31,24 @@ const AdminDashboard: React.FC = () => {
 
   useEffect(() => {
     const storedLecturer = localStorage.getItem("lecturer_id");
+
     if (storedLecturer) {
-      fetch(`https://attendify-5pet.onrender.com/api/lecturers/${storedLecturer}`)
+      fetch(`http://127.0.0.1:5000/api/lecturers/${storedLecturer}`)
         .then((response) => response.json())
-        .then((data) => setLecturer(data.lecturer));
+        .then((data) => setLecturer(data));
     }
   }, []);
 
   useEffect(() => {
     if (lecturer) {
-      fetch(`https://attendify-5pet.onrender.com/api/lecturers/${lecturer.id}/units`)
+      fetch(`http://127.0.0.1:5000/api/lecturers/${lecturer.id}/units`)
         .then((response) => response.json())
         .then((data) => setUnits(data.units));
     }
   }, [lecturer]);
 
   useEffect(() => {
-    fetch("https://attendify-5pet.onrender.com/api/students")
+    fetch("http://127.0.0.1:5000/api/students")
       .then((response) => response.json())
       .then((data) => {
         const allStudents: Student[] = data.students;
@@ -63,7 +64,7 @@ const AdminDashboard: React.FC = () => {
   }, [units]);
 
   useEffect(() => {
-    fetch("https://attendify-5pet.onrender.com/api/attendance")
+    fetch("http://127.0.0.1:5000/api/attendance")
       .then((response) => response.json())
       .then((data) => {
         const attendanceRecords: Attendance[] = data.attendance;
@@ -74,6 +75,7 @@ const AdminDashboard: React.FC = () => {
         );
 
         setAttendance(filteredAttendance);
+
       })
       .catch((error) => console.error("Error fetching attendance:", error));
   }, [units, lecturer]);

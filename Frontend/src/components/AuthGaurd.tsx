@@ -1,20 +1,16 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
+import React from "react";
+import { Navigate } from "react-router-dom";
 
-const isAuthenticated = () => {
-  const lecturer = localStorage.getItem('lecturer');
-  return !!lecturer;
-};
+const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const token = localStorage.getItem("access");
 
-interface AuthGuardProps {
-  children: React.ReactNode;
-}
-
-const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
-  if (!isAuthenticated()) {
+  if (!token) {
+    console.log("No token found, redirecting to login...");
     return <Navigate to="/" />;
   }
-  return <>{children}</>;
+
+  console.log("Token found, rendering protected route...");
+  return <>{children}</>; // Ensure it properly renders the children
 };
 
 export default AuthGuard;

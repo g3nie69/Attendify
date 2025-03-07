@@ -2,10 +2,14 @@ from .models import Units, Students, Lecturers, Attendance
 from flask import request
 from . import db
 
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, JWTManager
 
 
 def auth_routes(app):
+
+    # initialize JWTManager
+
+    jwt = JWTManager(app)
 
     # login lecturer using lecturer code
     @app.route('/auth/api/login', methods=['POST'])
