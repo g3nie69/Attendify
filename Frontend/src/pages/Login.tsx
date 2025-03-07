@@ -22,7 +22,7 @@ const Login: React.FC = () => {
       return;
     }
 
-    fetch("http://127.0.0.1:5000/auth/api/login", {
+    fetch("https://attendify-5pet.onrender.com/auth/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

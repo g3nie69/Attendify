@@ -33,7 +33,7 @@ const AdminDashboard: React.FC = () => {
     const storedLecturer = localStorage.getItem("lecturer_id");
 
     if (storedLecturer) {
-      fetch(`http://127.0.0.1:5000/api/lecturers/${storedLecturer}`)
+      fetch(`https://attendify-5pet.onrender.com/api/lecturers/${storedLecturer}`)
         .then((response) => response.json())
         .then((data) => setLecturer(data));
     }
@@ -41,14 +41,14 @@ const AdminDashboard: React.FC = () => {
 
   useEffect(() => {
     if (lecturer) {
-      fetch(`http://127.0.0.1:5000/api/lecturers/${lecturer.id}/units`)
+      fetch(`https://attendify-5pet.onrender.com/api/lecturers/${lecturer.id}/units`)
         .then((response) => response.json())
         .then((data) => setUnits(data.units));
     }
   }, [lecturer]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/api/students")
+    fetch("https://attendify-5pet.onrender.com/api/students")
       .then((response) => response.json())
       .then((data) => {
         const allStudents: Student[] = data.students;
@@ -64,7 +64,7 @@ const AdminDashboard: React.FC = () => {
   }, [units]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/api/attendance")
+    fetch("https://attendify-5pet.onrender.com/api/attendance")
       .then((response) => response.json())
       .then((data) => {
         const attendanceRecords: Attendance[] = data.attendance;
