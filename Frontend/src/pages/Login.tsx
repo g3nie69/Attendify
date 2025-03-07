@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../assets/dashboard.css";
+import "../assets/login.css";
 
 const Login: React.FC = () => {
   const [lecturerCode, setLecturerCode] = useState("");
@@ -55,17 +55,54 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="login-form">
-      <h2>Lecturer Login</h2>
-      <input
-        type="text"
-        value={lecturerCode}
-        onChange={(e) => setLecturerCode(e.target.value)}
-        placeholder="Enter Lecturer Code"
-        required
-      />
-      <button onClick={handleLogin}>Login</button>
-      {error && <p className="error">{error}</p>}
+    <div className="login-main-container">
+    <div className="w-full max-w-2xl bg-white p-8 rounded-2xl shadow-lg flex flex-col" id="login-form">
+    <h2 className="text-2xl font-semibold text-gray-900">Log In</h2>
+    <p className="text-gray-500 text-sm mt-2">
+      Not an admin yet? <a href="#" className="text-blue-600">Request access</a>.
+    </p>
+
+    <div className="mt-6 space-y-4">
+      <div>
+        <label className="block text-gray-600 text-sm">Email address</label>
+        <input
+          type="email"
+          className="w-full mt-1 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
+          placeholder="Use university email address"
+        />
+      </div>
+
+      <div>
+        <label className="block text-gray-600 text-sm">Enter lecturer code</label>
+        <input
+          type="text"
+          value={lecturerCode}
+          onChange={(e) => setLecturerCode(e.target.value)}
+          className="w-full mt-1 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
+          placeholder="Enter your lecture code"
+          required
+        />
+      </div>
+    </div>
+
+
+    <div className="flex gap-4 mt-6">
+      <button className="px-6 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" onClick={handleLogin}>Submit</button>
+    </div>
+
+    {error && <p className="error">{error}</p>}
+
+    <div className="my-6 text-center text-gray-400">Or continue with following options:</div>
+
+    <div className="flex justify-center gap-4">
+      <button className="p-3 bg-gray-100 rounded-lg hover:bg-gray-200">🔵 Use 2A Factor</button>
+      <button className="p-3 bg-gray-100 rounded-lg hover:bg-gray-200">🔴 Google</button>
+    </div>
+
+    <div className="mt-8 text-center text-gray-500">
+      Any questions? <a href="#" className="text-blue-600">Call us now.</a>
+    </div>
+  </div>
     </div>
   );
 };

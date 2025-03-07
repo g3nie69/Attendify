@@ -86,7 +86,7 @@ const AdminDashboard: React.FC = () => {
       return;
     }
     const expiryDate = new Date(Date.now() + expiryMinutes * 60000).toISOString();
-    const link = `https://attendify-five.vercel.app/mark-attendance?lecturer_id=${lecturer.id}&unit_id=${selectedUnit}&expiry=${encodeURIComponent(expiryDate)}`;
+    const link = `http://10.104.111.69:5173/mark-attendance?lecturer_id=${lecturer.id}&unit_id=${selectedUnit}&expiry=${encodeURIComponent(expiryDate)}`;
     setQrLink(link);
   };
 

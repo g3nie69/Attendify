@@ -1,0 +1,71 @@
+.login-main-container {
+    background-image: url('../assets/kca-bg1.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    /* Center login form vertically and horinzontally */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    border: 0;
+    padding: 0;
+}
+
+#login-form {
+    /* Center form */
+    width: 900px;
+    padding: 20px;
+}
+button:hover {
+    cursor: pointer;
+}
+
+/* body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-image: url('../assets/kca-bg1.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+
+    display: flex;
+    align-items: center; 
+    height: 100vh; 
+}
+
+.login-form {
+    max-width: 900px;
+    max-height: 600px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-left: 30px;  
+    width: 100%;
+    margin: auto;
+}
+.login-form input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    box-sizing: border-box;
+}
+.login-form button {
+    width: 100%;
+    padding: 10px;
+    background: #4285f4;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+}
+.login-form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 30px;
+    font-weight: bold;
+} */
