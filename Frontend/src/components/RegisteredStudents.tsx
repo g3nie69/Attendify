@@ -32,18 +32,21 @@ const RegisteredStudents: React.FC = () => {
     }
   }, []);
 
+//   console.log(allStudents.length)
+
   // allStuddents: [{ id: 1,student_name: "John Doe", reg_number: "SCS/001", year_of_study: 1, registered_units: [1, 3] }]
   // units: [{ id: 1, unit_name: "Unit 1", unit_code: "CS301" }] => units taught by the lecturer (logged in)
   // 3. Filter students to only those in the lecturer's units
     useEffect(() => {
         if (allStudents.length > 0 && units.length > 0) {
-        const filteredStudents = allStudents.filter((student) =>{
+        const filteredStudents = allStudents.filter((student) =>
             student.registered_units.some((unitId) => units.map((unit) => unit.id).includes(unitId))
-        }
         );
         setStudents(filteredStudents);
         }
     }, [allStudents, units]);
+
+    // console.log(students.length);
 
   // 4. Filter by search query
   const filteredStudents = students.filter((student) =>
