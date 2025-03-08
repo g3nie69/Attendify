@@ -10,19 +10,57 @@ interface Attendance {
 
 const AttendanceRecords: React.FC = () => {
   const [attendance, setAttendance] = useState<Attendance[]>([]);
+  const [filteredAttendance, setFilteredAttendance] = useState<Attendance[]>([]);
+  const [searchDate, setSearchDate] = useState<string>("");
+  const [searchUnit, setSearchUnit] = useState<string>("");
 
   useEffect(() => {
     fetch("https://attendify-5pet.onrender.com/api/attendance")
       .then((response) => response.json())
-      .then((data) => setAttendance(data.attendance))
+      .then((data) => {
+        setAttendance(data.attendance);
+        setFilteredAttendance(data.attendance); // Initialize filtered records
+      })
       .catch((error) => console.error("Error fetching attendance:", error));
   }, []);
 
-  console.log(attendance);
+  // Filter function
+  useEffect(() => {
+    let filtered = attendance;
+
+    if (searchDate) {
+      filtered = filtered.filter((record) => record.date.startsWith(searchDate));
+    }
+
+    if (searchUnit) {
+      filtered = filtered.filter((record) => record.unit_code.toLowerCase().includes(searchUnit.toLowerCase()));
+    }
+
+    setFilteredAttendance(filtered);
+  }, [searchDate, searchUnit, attendance]);
 
   return (
     <div>
       <h2 className="text-lg font-bold mb-4">Attendance Records</h2>
+
+      {/* Filters */}
+      <div className="flex space-x-4 mb-4">
+        <input
+          type="date"
+          className="border p-2 rounded"
+          value={searchDate}
+          onChange={(e) => setSearchDate(e.target.value)}
+        />
+        <input
+          type="text"
+          className="border p-2 rounded"
+          placeholder="Search by Unit Code"
+          value={searchUnit}
+          onChange={(e) => setSearchUnit(e.target.value)}
+        />
+      </div>
+
+      {/* Table */}
       <table className="min-w-full bg-white border">
         <thead>
           <tr>
@@ -34,19 +72,21 @@ const AttendanceRecords: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {attendance.length > 0 ? (
-            attendance.map((record, index) => (
+          {filteredAttendance.length > 0 ? (
+            filteredAttendance.map((record, index) => (
               <tr key={index}>
                 <td className="border px-4 py-2">{record.reg_number}</td>
                 <td className="border px-4 py-2">{record.student_name}</td>
                 <td className="border px-4 py-2">{record.unit_code}</td>
                 <td className="border px-4 py-2">{record.date}</td>
-                <td className="border px-4 py-2">{record.status}</td>
+                <td className={`border px-4 py-2 ${record.status === "present" ? "text-green-600 font-semibold" : "text-red-600"}`}>
+                  {record.status}
+                </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan={4} className="text-center p-4">No attendance records found</td>
+              <td colSpan={5} className="text-center p-4">No matching records found</td>
             </tr>
           )}
         </tbody>
