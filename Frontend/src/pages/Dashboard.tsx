@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
-import { QRCodeCanvas } from "qrcode.react";
 import { Menu } from "lucide-react";
 import RegisteredStudents from "../components/RegisteredStudents";
 import AttendanceRecords from "../components/AttendanceRecords";
@@ -14,6 +13,7 @@ const AdminDashboard: React.FC = () => {
   const [attendance, setAttendance] = useState<any[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedSection, setSelectedSection] = useState("dashboard");
+  const sidebarRef = useRef<HTMLDivElement>(null); // Reference for detecting outside clicks
 
   useEffect(() => {
     const storedLecturer = localStorage.getItem("lecturer_id");
@@ -49,29 +49,66 @@ const AdminDashboard: React.FC = () => {
     { name: "Absent", value: attendance.filter((a) => a.status === "Absent").length },
   ];
 
-  // handle signout
   const handleSignOut = () => {
     localStorage.removeItem("lecturer_id");
     localStorage.removeItem("access");
     window.location.reload();
   };
 
+  const handleSectionClick = (section: string) => {
+    setSelectedSection(section);
+    if (window.innerWidth < 768) {
+      setSidebarOpen(false); // Close sidebar on small screens
+    }
+  };
+
+  // Close sidebar when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+        setSidebarOpen(false);
+      }
+    };
+
+    if (sidebarOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [sidebarOpen]);
+
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100 relative">
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 md:relative w-64 bg-gray-800 text-white p-5 transition-transform duration-300 ease-in-out`}> 
+      <div
+        ref={sidebarRef}
+        className={`fixed inset-y-0 left-0 transform ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0 md:relative w-64 bg-gray-800 text-white p-5 transition-transform duration-300 ease-in-out`}
+      >
         <h2 className="text-xl font-bold mb-6">Lecturer’s Dashboard</h2>
         <ul>
-          <li className="py-2 hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => setSelectedSection("dashboard")}>Dashboard</li>
-          <li className="py-2 hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => setSelectedSection("students")}>Registered Students</li>
-          <li className="py-2 hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => setSelectedSection("attendance")}>Attendance Records</li>
-          <li className="py-2 hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => setSelectedSection("qr")}>Generate QR Code</li>
+          <li className="py-2 hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => handleSectionClick("dashboard")}>
+            Dashboard
+          </li>
+          <li className="py-2 hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => handleSectionClick("students")}>
+            Registered Students
+          </li>
+          <li className="py-2 hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => handleSectionClick("attendance")}>
+            Attendance Records
+          </li>
+          <li className="py-2 hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => handleSectionClick("qr")}>
+            Generate QR Code
+          </li>
         </ul>
         <div className="absolute bottom-4">
-          <button className="text-red-400" onClick={handleSignOut}>Sign Out</button>
+          <button className="text-red-400" onClick={handleSignOut}>
+            Sign Out
+          </button>
         </div>
       </div>
-      
+
       {/* Main Content */}
       <div className="flex-1 p-6">
         {/* Header */}
@@ -89,7 +126,9 @@ const AdminDashboard: React.FC = () => {
               <h2 className="text-lg font-bold mb-4">Your Units</h2>
               <ul>
                 {units.map((unit) => (
-                  <li key={unit.id} className="py-2 border-b">{unit.unit_name} ({unit.unit_code})</li>
+                  <li key={unit.id} className="py-2 border-b">
+                    {unit.unit_name} ({unit.unit_code})
+                  </li>
                 ))}
               </ul>
             </div>
