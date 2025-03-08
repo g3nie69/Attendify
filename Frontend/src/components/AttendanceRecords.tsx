@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 interface Attendance {
   student_name: string;
   reg_number: string;
-  unit_name: string;
+  unit_code: string;
   date: string;
   status: string;
 }
@@ -17,6 +17,8 @@ const AttendanceRecords: React.FC = () => {
       .then((data) => setAttendance(data.attendance))
       .catch((error) => console.error("Error fetching attendance:", error));
   }, []);
+
+  console.log(attendance);
 
   return (
     <div>
@@ -35,7 +37,7 @@ const AttendanceRecords: React.FC = () => {
             attendance.map((record, index) => (
               <tr key={index}>
                 <td className="border px-4 py-2">{record.reg_number}</td>
-                <td className="border px-4 py-2">{record.unit_name}</td>
+                <td className="border px-4 py-2">{record.unit_code}</td>
                 <td className="border px-4 py-2">{record.date}</td>
                 <td className="border px-4 py-2">{record.status}</td>
               </tr>

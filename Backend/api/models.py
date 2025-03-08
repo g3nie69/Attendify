@@ -83,9 +83,14 @@ class Attendance(db.Model):
             'lecturer_id': self.lecturer_id,
             'date': self.date,
             'status': self.status,
-            'reg_number': self.reg_number
+            'reg_number': self.reg_number,
+            'unit_code': self.find_unit_code(self.unit_id)
         }
 
     def find_student(reg_number):
         student = Students.query.filter_by(reg_number=reg_number).first()
         return student.id if student else None
+    
+    def find_unit_code(unit_id):
+        unit = Units.query.filter_by(id=unit_id).first()
+        return unit.unit_code if unit else None
