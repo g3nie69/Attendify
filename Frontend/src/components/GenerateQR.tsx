@@ -47,13 +47,16 @@ const GenerateQR: React.FC<Props> = ({ lecturerId }) => {
                 </option>
             ))}
         </select>
-      <label className="block mb-2">Expiry (minutes)</label>
-      <input
-        type="number"
-        value={expiryMinutes}
-        onChange={(e) => setExpiryMinutes(parseInt(e.target.value))}
-        className="border p-2 mb-2 w-full"
-      />
+        <br />
+        {/* expiry time */}
+        <label className="block mb-2">Expiry (minutes)</label>
+        <input
+            type="number"
+            value={expiryMinutes}
+            onChange={(e) => setExpiryMinutes(Math.max(1, parseInt(e.target.value)))}
+            className="border p-2 mb-2 w-full" 
+        />
+      <br />
       <button onClick={generateQRCode} className="bg-blue-600 text-white p-2 rounded">
         Generate QR Code
       </button>

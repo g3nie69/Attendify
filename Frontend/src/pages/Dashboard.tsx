@@ -102,6 +102,7 @@ const AdminDashboard: React.FC = () => {
             Generate QR Code
           </li>
         </ul>
+
         <div className="absolute bottom-4">
           <button className="text-red-400" onClick={handleSignOut}>
             Sign Out
@@ -116,7 +117,7 @@ const AdminDashboard: React.FC = () => {
           <button className="md:hidden" onClick={() => setSidebarOpen(!sidebarOpen)}>
             <Menu size={24} />
           </button>
-          <h1 className="text-xl font-bold">Welcome, {lecturer?.lecturer_name}</h1>
+          <h1 className="text-xl font-bold">Welcome, {lecturer?.lecturer_name} 👋🏻</h1>
         </header>
 
         {/* Conditional Rendering Based on Sidebar Selection */}
