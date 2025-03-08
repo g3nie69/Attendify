@@ -77,6 +77,7 @@ class Attendance(db.Model):
 
     def to_dict(self):
         unit_code = self.find_unit_code()
+        student_name = self.find_student_name()
         return {
             'id': self.id,
             'student_id': self.student_id,
@@ -85,9 +86,14 @@ class Attendance(db.Model):
             'date': self.date,
             'status': self.status,
             'reg_number': self.reg_number,
-            'unit_code': unit_code
+            'unit_code': unit_code,
+            'student_name': student_name
         }
 
     def find_unit_code(self):
         unit = Units.query.get(self.unit_id)
         return unit.unit_code if unit else None
+    
+    def find_student_name(self):
+        student = Students.query.get(self.student_id)
+        return student.student_name if student else None
