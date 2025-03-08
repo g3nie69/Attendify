@@ -14,8 +14,10 @@ const AttendanceRecords: React.FC = () => {
   const [searchDate, setSearchDate] = useState<string>("");
   const [searchUnit, setSearchUnit] = useState<string>("");
 
+  const lecturerId = localStorage.getItem("lecturer_id");
+
   useEffect(() => {
-    fetch("https://attendify-5pet.onrender.com/api/attendance")
+    fetch(`https://attendify-5pet.onrender.com/api/attendance/lecturer/${lecturerId}`)
       .then((response) => response.json())
       .then((data) => {
         setAttendance(data.attendance);

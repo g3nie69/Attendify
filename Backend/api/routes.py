@@ -190,3 +190,8 @@ def register_routes(app):
     def get_attendance():
         attendance = Attendance.query.all()
         return {'attendance': [att.to_dict() for att in attendance]}
+    
+    @app.route('/api/attendance/lecturer/<int:id>', methods=['GET'])
+    def get_lecturer_attendance(id):
+        attendance = Attendance.query.filter_by(lecturer_id=id).all()
+        return {'attendance': [att.to_dict() for att in attendance]}
