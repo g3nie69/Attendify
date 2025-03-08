@@ -5,13 +5,13 @@ import "../assets/login.css";
 const Login: React.FC = () => {
   const [lecturerCode, setLecturerCode] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); // New state for loading
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("access");
     if (token) {
-      navigate("/dashboard"); 
+      navigate("/dashboard");
     }
   }, []);
 
@@ -21,7 +21,7 @@ const Login: React.FC = () => {
       return;
     }
 
-    setLoading(true); // Show loader
+    setLoading(true); // Show loading spinner
     setError(""); // Clear previous errors
 
     fetch("https://attendify-5pet.onrender.com/auth/api/login", {
@@ -31,25 +31,27 @@ const Login: React.FC = () => {
       },
       body: JSON.stringify({ lecturer_code: lecturerCode }),
     })
-      .then((res) => res.json())
-      .then((data) => {
-        setLoading(false); // Hide loader
+      .then((res) => res.json().then((data) => ({ status: res.status, body: data }))) // Get both status & body
+      .then(({ status, body }) => {
+        setLoading(false); // Hide loading spinner
 
-        if (data.error) {
-          setError(data.error);
-        } else {
-          localStorage.setItem("access", data.access_token);
-          localStorage.setItem("lecturer_id", data.lecturer_id);
-          navigate("/dashboard"); 
+        if (status === 401) {
+          setError(body.message); // Display "Invalid lecturer code"
+        } else if (body.access_token) {
+          localStorage.setItem("access", body.access_token);
+          localStorage.setItem("lecturer_id", body.lecturer_id);
+          navigate("/dashboard");
 
           // Token expires after 1 hour
           setTimeout(() => {
             localStorage.removeItem("access");
           }, 3600000);
+        } else {
+          setError("An unexpected error occurred.");
         }
       })
       .catch((err) => {
-        setLoading(false); // Hide loader
+        setLoading(false);
         setError("Login failed. Please try again.");
       });
   };
@@ -70,7 +72,7 @@ const Login: React.FC = () => {
               value={lecturerCode}
               onChange={(e) => setLecturerCode(e.target.value)}
               className="w-full mt-1 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your lecture code"
+              placeholder="Enter your lecturer code"
               required
             />
           </div>
@@ -78,12 +80,12 @@ const Login: React.FC = () => {
 
         <div className="flex gap-4 mt-6">
           <button 
-            className="px-6 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2"
-            onClick={handleLogin} 
+            className="px-6 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 flex items-center justify-center"
+            onClick={handleLogin}
             disabled={loading} // Disable button when loading
           >
             {loading ? (
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-white border-opacity-50"></div>
             ) : (
               "Submit"
             )}
