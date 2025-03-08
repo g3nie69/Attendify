@@ -4,24 +4,52 @@ interface Student {
   student_name: string;
   reg_number: string;
   year_of_study: number;
+  registered_units: string[];
 }
 
 const RegisteredStudents: React.FC = () => {
+  const [allStudents, setAllStudents] = useState<Student[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [units, setUnits] = useState<any[]>([]);
   const [students, setStudents] = useState<Student[]>([]);
-  const [searchQuery, setSearchQuery] = useState(""); // State for search input
 
+  // 1. Fetch all students
   useEffect(() => {
     fetch("https://attendify-5pet.onrender.com/api/students")
       .then((response) => response.json())
-      .then((data) => setStudents(data.students))
+      .then((data) => setAllStudents(data.students))
       .catch((error) => console.error("Error fetching students:", error));
   }, []);
 
-  // Filter students based on search query
+  // 2. Fetch units for the logged-in lecturer
+  useEffect(() => {
+    const lecturerId = localStorage.getItem("lecturer_id");
+    if (lecturerId) {
+      fetch(`https://attendify-5pet.onrender.com/api/lecturers/${lecturerId}/units`)
+        .then((response) => response.json())
+        .then((data) => setUnits(data.units))
+        .catch((error) => console.error("Error fetching units:", error));
+    }
+  }, []);
+
+  // allStuddents: [{ id: 1,student_name: "John Doe", reg_number: "SCS/001", year_of_study: 1, registered_units: [1, 3] }]
+  // units: [{ id: 1, unit_name: "Unit 1", unit_code: "CS301" }] => units taught by the lecturer (logged in)
+  // 3. Filter students to only those in the lecturer's units
+    useEffect(() => {
+        if (allStudents.length > 0 && units.length > 0) {
+        const filteredStudents = allStudents.filter((student) =>{
+            student.registered_units.some((unitId) => units.map((unit) => unit.id).includes(unitId))
+        }
+        );
+        setStudents(filteredStudents);
+        }
+    }, [allStudents, units]);
+
+  // 4. Filter by search query
   const filteredStudents = students.filter((student) =>
     student.student_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     student.reg_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    student.year_of_study.toString().includes(searchQuery) // Convert number to string for search
+    student.year_of_study.toString().includes(searchQuery)
   );
 
   return (
@@ -56,7 +84,9 @@ const RegisteredStudents: React.FC = () => {
             ))
           ) : (
             <tr>
-              <td colSpan={3} className="text-center p-4">No students found</td>
+              <td colSpan={3} className="text-center p-4">
+                No students found
+              </td>
             </tr>
           )}
         </tbody>
