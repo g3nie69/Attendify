@@ -44,9 +44,14 @@ const AdminDashboard: React.FC = () => {
       });
   }, [units, lecturer]);
 
+  // const attendanceData = [
+  //   { name: "Present", value: attendance.filter((a) => a.status === "present").length },
+  //   { name: "Absent", value: attendance.filter((a) => a.status === "Absent").length },
+  // ];
+  // Dummy data for testing
   const attendanceData = [
-    { name: "Present", value: attendance.filter((a) => a.status === "Present").length },
-    { name: "Absent", value: attendance.filter((a) => a.status === "Absent").length },
+    { name: "Present", value: 10 },
+    { name: "Absent", value: 5 },
   ];
 
   const handleSignOut = () => {
