@@ -74,8 +74,9 @@ class Attendance(db.Model):
 
     def __repr__(self):
         return f'<Attendance {self.id}>'
-    
+
     def to_dict(self):
+        unit_code = self.find_unit_code()
         return {
             'id': self.id,
             'student_id': self.student_id,
@@ -84,13 +85,9 @@ class Attendance(db.Model):
             'date': self.date,
             'status': self.status,
             'reg_number': self.reg_number,
-            'unit_code': self.find_unit_code(self.unit_id)
+            'unit_code': unit_code
         }
 
-    def find_student(reg_number):
-        student = Students.query.filter_by(reg_number=reg_number).first()
-        return student.id if student else None
-    
-    def find_unit_code(unit_id):
-        unit = Units.query.filter_by(id=unit_id).first()
+    def find_unit_code(self):
+        unit = Units.query.get(self.unit_id)
         return unit.unit_code if unit else None
