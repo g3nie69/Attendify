@@ -26,7 +26,7 @@ const GenerateQR: React.FC<Props> = ({ lecturerId }) => {
       return;
     }
     const expiryDate = new Date(Date.now() + expiryMinutes * 60000).toISOString();
-    const link = `http://localhost:5173/mark-attendance?lecturer_id=${lecturerId}&unit_id=${unitId}&expiry=${encodeURIComponent(expiryDate)}`;
+    const link = `http://127.0.0.1:5173/mark-attendance?lecturer_id=${lecturerId}&unit_id=${unitId}&expiry=${encodeURIComponent(expiryDate)}`;
     setQrLink(link);
   };
 
@@ -79,6 +79,7 @@ const GenerateQR: React.FC<Props> = ({ lecturerId }) => {
       {/* Display QR Code */}
       {qrLink && (
         <div ref={qrRef} className="mt-4">
+          <p>{qrLink}</p>
           <QRCodeCanvas value={qrLink} size={200} />
           <br />
             <button onClick={downloadQR} className="bg-blue-600 text-white p-2 rounded mt-2">

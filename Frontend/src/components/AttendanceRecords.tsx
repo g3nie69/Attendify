@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 interface Attendance {
-  student_name: string;
+  // student_name: string;
   reg_number: string;
   unit_code: string;
   date: string;
@@ -67,7 +67,7 @@ const AttendanceRecords: React.FC = () => {
         <thead>
           <tr>
             <th className="border px-4 py-2">Student Reg Number</th>
-            <th className="border px-4 py-2">Student Name</th>
+            {/* <th className="border px-4 py-2">Student Name</th> */}
             <th className="border px-4 py-2">Unit</th>
             <th className="border px-4 py-2">Date</th>
             <th className="border px-4 py-2">Status</th>
@@ -78,7 +78,7 @@ const AttendanceRecords: React.FC = () => {
             filteredAttendance.map((record, index) => (
               <tr key={index}>
                 <td className="border px-4 py-2">{record.reg_number}</td>
-                <td className="border px-4 py-2">{record.student_name}</td>
+                {/* <td className="border px-4 py-2">{record.student_name}</td> */}
                 <td className="border px-4 py-2">{record.unit_code}</td>
                 <td className="border px-4 py-2">{record.date}</td>
                 <td className={`border px-4 py-2 ${record.status === "present" ? "text-green-600 font-semibold" : "text-red-600"}`}>

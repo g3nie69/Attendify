@@ -6,6 +6,13 @@ import AttendanceRecords from "../components/AttendanceRecords";
 import GenerateQR from "../components/GenerateQR";
 
 const COLORS = ["#0088FE", "#00C49F"];
+interface AttendanceRecord {
+  lecturer_id: number;
+  unit_id: number;
+  status: string;
+  // Add other properties if needed
+}
+
 
 const AdminDashboard: React.FC = () => {
   const [lecturer, setLecturer] = useState<any>(null);
@@ -38,7 +45,7 @@ const AdminDashboard: React.FC = () => {
       .then((data) => {
         const lecturerUnitIds = units.map((unit) => unit.id);
         const filteredAttendance = data.attendance.filter(
-          (record) => record.lecturer_id === lecturer?.id && lecturerUnitIds.includes(record.unit_id)
+          (record: AttendanceRecord) => record.lecturer_id === lecturer?.id && lecturerUnitIds.includes(record.unit_id)
         );
         setAttendance(filteredAttendance);
       });
@@ -49,9 +56,10 @@ const AdminDashboard: React.FC = () => {
   //   { name: "Absent", value: attendance.filter((a) => a.status === "Absent").length },
   // ];
   // Dummy data for testing
+  console.log(attendance);
   const attendanceData = [
-    { name: "Present", value: 10 },
-    { name: "Absent", value: 5 },
+    { name: "Present", value: 18 },
+    { name: "Absent", value: 3 },
   ];
 
   const handleSignOut = () => {
@@ -92,15 +100,15 @@ const AdminDashboard: React.FC = () => {
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0 md:relative w-64 bg-gray-800 text-white p-5 transition-transform duration-300 ease-in-out`}
       >
-        <h2 className="text-xl font-bold mb-6">Lecturer’s Dashboard</h2>
+        <h2 className="text-xl font-bold mb-10">Lecturer’s Dashboard</h2>
         <ul>
-          <li className="py-2 hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => handleSectionClick("dashboard")}>
+          <li className="py-2 hover:bg-gray-700 p-2 rounded cursor-pointer mb-3" onClick={() => handleSectionClick("dashboard")}>
             Dashboard
           </li>
-          <li className="py-2 hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => handleSectionClick("students")}>
+          <li className="py-2 hover:bg-gray-700 p-2 rounded cursor-pointer mb-3" onClick={() => handleSectionClick("students")}>
             Registered Students
           </li>
-          <li className="py-2 hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => handleSectionClick("attendance")}>
+          <li className="py-2 hover:bg-gray-700 p-2 rounded cursor-pointer mb-3" onClick={() => handleSectionClick("attendance")}>
             Attendance Records
           </li>
           <li className="py-2 hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => handleSectionClick("qr")}>
@@ -142,7 +150,7 @@ const AdminDashboard: React.FC = () => {
               <h2 className="text-lg font-bold mb-4">Attendance Overview</h2>
               <PieChart width={300} height={300}>
                 <Pie data={attendanceData} cx={150} cy={150} innerRadius={60} outerRadius={80} fill="#8884d8" dataKey="value">
-                  {attendanceData.map((entry, index) => (
+                  {attendanceData.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
