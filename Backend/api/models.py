@@ -97,3 +97,8 @@ class Attendance(db.Model):
     def find_student_name(self):
         student = Students.query.get(self.student_id)
         return student.student_name if student else None
+    
+    # find student id from reg number
+    def find_student(reg_number):
+        student = Students.query.filter_by(reg_number=reg_number).first()
+        return student.id if student else None
