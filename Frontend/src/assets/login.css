@@ -1,5 +1,5 @@
 .login-main-container {
-    background-image: url('../assets/B1-KCA-ENT.jpg');
+    background-image: url('../src/assets/B1-KCA-ENT.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -18,7 +18,7 @@
     /* Center form */
     width: 900px;
     padding: 20px;
-}
+}e
 button:hover {
     cursor: pointer;
 }
