@@ -26,7 +26,7 @@ const GenerateQR: React.FC<Props> = ({ lecturerId }) => {
       return;
     }
     const expiryDate = new Date(Date.now() + expiryMinutes * 60000).toISOString();
-    const link = `https://www.waltertayarg.me/mark-attendance?lecturer_id=${lecturerId}&unit_id=${unitId}&expiry=${encodeURIComponent(expiryDate)}`;
+    const link = `https://attendify-production.up.railway.app/mark-attendance?lecturer_id=${lecturerId}&unit_id=${unitId}&expiry=${encodeURIComponent(expiryDate)}`;
     setQrLink(link);
   };
 

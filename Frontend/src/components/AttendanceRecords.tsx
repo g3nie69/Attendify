@@ -80,7 +80,7 @@ const AttendanceRecords: React.FC = () => {
                 <td className="border px-4 py-2">{record.reg_number}</td>
                 {/* <td className="border px-4 py-2">{record.student_name}</td> */}
                 <td className="border px-4 py-2">{record.unit_code}</td>
-                <td className="border px-4 py-2">{record.date}</td>
+                <td className="border px-4 py-2">{new Date(record.date).toLocaleString("en-KE")}</td>
                 <td className={`border px-4 py-2 ${record.status === "present" ? "text-green-600 font-semibold" : "text-red-600"}`}>
                   {record.status}
                 </td>
